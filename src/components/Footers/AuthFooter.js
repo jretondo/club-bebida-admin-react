@@ -20,7 +20,7 @@ import React from "react";
 
 // reactstrap components
 import { NavItem, NavLink, Nav, Container, Row, Col } from "reactstrap";
-
+import moment from 'moment';
 class Login extends React.Component {
   render() {
     return (
@@ -30,7 +30,7 @@ class Login extends React.Component {
             <Row className="align-items-center justify-content-xl-between">
               <Col xl="12" style={{ textAlign: "center" }}>
                 <div className="copyright text-center  text-muted">
-                  © 2022{" Club de la Limpieza - Un producto de "}
+                  © {moment(new Date()).format("YYYY")}{" "}{" Club de la Bebida - Un producto de "}
                   <a
                     className="font-weight-bold ml-1"
                     href="https://nekonet.com.ar"

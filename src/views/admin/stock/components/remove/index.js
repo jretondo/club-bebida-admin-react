@@ -11,7 +11,7 @@ const RemoveStock = () => {
     const [prodId, setProdId] = useState(0)
     const [cantRemove, setCantRemove] = useState(1)
     const [stock, setStock] = useState(0)
-    const [ptoVta, setPtoVta] = useState({ id: "" })
+    const [ptoVta, setPtoVta] = useState({ id: 0 })
     const [ptoVtaList, setPtoVtaList] = useState(<option>No hay puntos de venta relacionados</option>)
     const [motivo, setMotivo] = useState("")
     const [cargarStock, setCargarStock] = useState(false)

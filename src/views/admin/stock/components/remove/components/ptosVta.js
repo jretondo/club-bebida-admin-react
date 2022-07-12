@@ -49,7 +49,7 @@ const PtosVtas = ({
             <FormGroup>
                 <Input className={loading ? "shimmer3" : ""} disabled={loading} type="select" id="ptoVtaTxt" onChange={e => setPtoVta(JSON.parse(e.target.value))} value={JSON.stringify(ptoVta)}>
                     {ptoVtaList}
-                    <option value={JSON.stringify({ id: -1 })} key={99} >Deposito</option>
+                    <option value={JSON.stringify({ id: 0 })} key={99} >Deposito</option>
                 </Input>
             </FormGroup>
         </Col>
