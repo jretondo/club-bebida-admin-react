@@ -7,6 +7,7 @@ import UrlNodeServer from '../../../../../api/NodeServer';
 import axios from 'axios';
 import FilaProducto from 'components/subComponents/Listados/SubComponentes/FilaProducto';
 import Spinner from 'reactstrap/lib/Spinner';
+import FileSaver from 'file-saver';
 
 const titulos = ["Producto", "Proveedor", "Marca", "Costo s/IVA", "Costo c/IVA", "% Gan.", ""]
 
@@ -27,14 +28,16 @@ const ProdList = ({
     setSuccessAlert,
     setDetallesBool,
     setIdDetalle,
-    setCopiarDet
+    setCopiarDet,
+    busquedaBool,
+    setBusquedaBool,
+    palabraBuscada,
+    setPalabraBuscada,
+    pagina,
+    setPagina
 }) => {
-
-    const [busquedaBool, setBusquedaBool] = useState(false)
-    const [palabraBuscada, setPalabraBuscada] = useState("")
     const [plantPaginas, setPlantPaginas] = useState([])
     const [ultimaPag, setUltimaPag] = useState(0)
-    const [pagina, setPagina] = useState(1)
     const [listado, setListado] = useState([])
     const [dataState, setDataState] = useState([])
     const [esperar, setEsperar] = useState(false)
@@ -216,6 +219,32 @@ const ProdList = ({
             })
     }
 
+    const donwloadPrices = async () => {
+        let data = {
+            query: ""
+        }
+        if (busquedaBool) {
+            data = {
+                query: palabraBuscada
+            }
+        }
+        setEsperar(true)
+        await axios.get(UrlNodeServer.productsDir.sub.productPrices, {
+            responseType: 'arraybuffer',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('user-token'),
+                Accept: 'application/pdf',
+            },
+            params: data
+        }).then(res => {
+            let headerLine = res.headers['content-disposition'];
+            const largo = parseInt(headerLine.length)
+            let filename = headerLine.substring(21, largo);
+            var blob = new Blob([res.data], { type: "application/pdf" });
+            FileSaver.saveAs(blob, filename);
+        }).catch(() => { }).finally(() => setEsperar(false))
+    }
+
     return (
         <Row style={
             detallesBool ?
@@ -243,6 +272,7 @@ const ProdList = ({
                                             call={call}
                                             setCall={setCall}
                                             titulo="Buscar un Producto"
+                                            setPagina={setPagina}
                                         />
                                     </Col>
                                 </Row>
@@ -311,7 +341,7 @@ const ProdList = ({
                                                                 </Input> : null
                                                         }
                                                         <FormGroup check>
-                                                            <Input type="checkbox" id="roundTxt" checked={round} onChange={e => setRoundBool(e.target.checked)} />
+                                                            <Input type="checkbox" id="roundTxt" checked={roundBool} onChange={e => setRoundBool(e.target.checked)} />
                                                             {' '}
                                                             <Label check for="roundTxt">
                                                                 Redondear
@@ -366,6 +396,18 @@ const ProdList = ({
                                                         setVarCostoBool(true);
                                                     }}>
                                                     Variar Costos
+                                                </button>
+                                            </Col>
+
+                                            <Col style={{ marginTop: "20px", textAlign: "center" }}>
+                                                <button
+                                                    className="btn btn-primary"
+                                                    style={nvaOffer ? { display: "none", width: "160px", margin: "auto" } : { display: "block", width: "160px", margin: "auto" }}
+                                                    onClick={e => {
+                                                        e.preventDefault();
+                                                        donwloadPrices();
+                                                    }}>
+                                                    Descargar Precios
                                                 </button>
                                             </Col>
                                         </Row>}
