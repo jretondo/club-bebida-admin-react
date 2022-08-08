@@ -9,8 +9,6 @@ import {
     Label,
     Row
 } from 'reactstrap';
-import useSound from 'use-sound';
-import beepSfx from '../../../../../../assets/sounds/beep.mp3';
 import Scanner from "components/scanner";
 import productsSellContext from '../../../../../../context/productsSell';
 import Form from 'reactstrap/lib/Form';
@@ -26,10 +24,8 @@ const ProductFinder = () => {
 
     const { NewProdSell, productsSellList, error } = useContext(productsSellContext)
 
-    const [play] = useSound(beepSfx);
 
     const findProd = (textFind) => {
-        play()
         NewProdSell(textFind, cantProd)
     }
 
@@ -42,7 +38,6 @@ const ProductFinder = () => {
     }
 
     useEffect(() => {
-        play()
         if (result !== null) {
             NewProdSell(prodText, cantProd)
         }

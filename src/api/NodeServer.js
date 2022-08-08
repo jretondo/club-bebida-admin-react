@@ -132,7 +132,9 @@ const invoicesDir = {
         notaCred: invoices + "/notaCred",
         paytype: invoices + "/paytype",
         dummy: invoices + "/dummy",
-        timeout: invoices + "/timeout"
+        timeout: invoices + "/timeout",
+        detFact: invoices + "/detFact",
+        notaCredPart: invoices + "/notaCredPart"
     }
 }
 
