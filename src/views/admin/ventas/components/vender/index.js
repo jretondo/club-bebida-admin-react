@@ -113,32 +113,28 @@ const Ventas = ({
         if (parseInt(formaPago) === 5 && parseFloat(total) !== parseFloat(totalPrecio)) {
             swal("Error: Total del pago!", "Revise que el total del pago debe ser igual al total de la factura.", "error");
         } else {
-            if (totalPrecio > 15795 && parseInt(clienteBool) === 0 && parseInt(factFiscBool) === 1) {
-                swal("Error: Consumidor Final!", "Cuando el importe supere los $15.795,00 se tendrá que identificar el consumidor final si o si por exigencias de AFIP.", "error");
-            } else {
-                if (productsSellList.length > 0) {
-                    if (parseInt(clienteBool) === 1) {
-                        if (parseInt(tipoDoc) === 96) {
-                            const largo = ndoc.length
-                            if (largo > 8 || largo < 7) {
-                                swal("Error en el DNI!", "El DNI que trata de cargar es inválido! Reviselo.", "error");
-                            } else {
-                                facturar(data)
-                            }
+            if (productsSellList.length > 0) {
+                if (parseInt(clienteBool) === 1) {
+                    if (parseInt(tipoDoc) === 96) {
+                        const largo = ndoc.length
+                        if (largo > 8 || largo < 7) {
+                            swal("Error en el DNI!", "El DNI que trata de cargar es inválido! Reviselo.", "error");
                         } else {
-                            const esCuit = verificadorCuit(ndoc).isCuit
-                            if (esCuit) {
-                                facturar(data)
-                            } else {
-                                swal("Error en el CUIT!", "El CUIT que trata de cargar es inválido! Reviselo.", "error");
-                            }
+                            facturar(data)
                         }
                     } else {
-                        facturar(data)
+                        const esCuit = verificadorCuit(ndoc).isCuit
+                        if (esCuit) {
+                            facturar(data)
+                        } else {
+                            swal("Error en el CUIT!", "El CUIT que trata de cargar es inválido! Reviselo.", "error");
+                        }
                     }
                 } else {
-                    swal("Error en el carrito!", "No hay productos para facturar! Controlelo.", "error");
+                    facturar(data)
                 }
+            } else {
+                swal("Error en el carrito!", "No hay productos para facturar! Controlelo.", "error");
             }
         }
 

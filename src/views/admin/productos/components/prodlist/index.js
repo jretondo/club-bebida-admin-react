@@ -245,6 +245,57 @@ const ProdList = ({
         }).catch(() => { }).finally(() => setEsperar(false))
     }
 
+    const printPDFOfProducts = async () => {
+        setEsperar(true)
+        let query = ""
+        if (busquedaBool) {
+            query = `query=${palabraBuscada}`
+        }
+
+        await axios.get(UrlNodeServer.productsDir.sub.pdf + "?" + query, {
+            responseType: 'arraybuffer',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('user-token'),
+                Accept: 'application/pdf',
+            }
+        }).then(res => {
+            let headerLine = res.headers['content-disposition'];
+            const largo = parseInt(headerLine.length)
+            let filename = headerLine.substring(21, largo);
+            var blob = new Blob([res.data], { type: "application/pdf" });
+            FileSaver.saveAs(blob, filename);
+            swal("Lista de productos!", "La lista ha sido impresa con éxito!", "success");
+        }).catch((err) => {
+            swal("Lista de productos!", "Hubo un errore al querer imprimir la lista!", "error");
+        }).finally(() => { setEsperar(false) })
+    }
+
+    const downloadProductsExcel = async () => {
+        setEsperar(true)
+        let query = ""
+        if (busquedaBool) {
+            query = `query=${palabraBuscada}`
+        }
+
+        await axios.get(UrlNodeServer.productsDir.sub.excel + "?" + query, {
+            responseType: 'arraybuffer',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('user-token'),
+                Accept: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            }
+        }).then(res => {
+            let headerLine = res.headers['content-disposition'];
+            const largo = parseInt(headerLine.length)
+            let filename = headerLine.substring(21, largo);
+            var blob = new Blob([res.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+            FileSaver.saveAs(blob, filename);
+            swal("Lista de productos!", "La lista ha sido descargada con éxito!", "success");
+        }).catch((err) => {
+            swal("Lista de productos!", "Hubo un errore al querer descargada la lista!", "error");
+        }).finally(() => { setEsperar(false) })
+    }
+
+
     return (
         <Row style={
             detallesBool ?
@@ -374,6 +425,30 @@ const ProdList = ({
                                             </Row>
                                         </Form>
                                         : <Row>
+                                            <Col style={{ marginTop: "20px", textAlign: "center" }}>
+                                                <button
+                                                    className="btn btn-danger"
+                                                    style={nvaOffer ? { display: "none", width: "160px", margin: "auto" } : { display: "block", width: "160px", margin: "auto" }}
+                                                    onClick={e => {
+                                                        e.preventDefault();
+                                                        printPDFOfProducts()
+                                                    }}
+                                                >
+                                                    Imprimir PDF
+                                                </button>
+                                            </Col>
+                                            <Col style={{ marginTop: "20px", textAlign: "center" }}>
+                                                <button
+                                                    className="btn btn-success"
+                                                    style={nvaOffer ? { display: "none", width: "160px", margin: "auto" } : { display: "block", width: "160px", margin: "auto" }}
+                                                    onClick={e => {
+                                                        e.preventDefault();
+                                                        downloadProductsExcel()
+                                                    }}
+                                                >
+                                                    Descargar Excel
+                                                </button>
+                                            </Col>
                                             <Col style={{ marginTop: "20px", textAlign: "center" }}>
                                                 <button
                                                     className="btn btn-primary"
